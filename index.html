@@ -1,1 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBOOKS LIBRARY - Free Ebooks Download</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 12px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .nav-logo span {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #ccc;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #a855f7;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #a855f7;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+      
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #3b82f6, #a855f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 600px;
+            margin-bottom: 30px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hero-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+        }
+      
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 80px 5%;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .card-btn:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+
+        /* Tools Section */
+        .tools {
+            padding: 80px 5%;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+      .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        .tool-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tool-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .tool-card p {
+            font-size: 0.85rem;
+            color: #aaa;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 5%;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .faq-question:hover {
+            color: #a855f7;
+        }
+
+        .faq-question i {
+            transition: transform 0.35s;
+            color: #a855f7;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-answer p {
+            padding: 0 20px 18px;
+            color: #aaa;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f1f1f;
+            padding: 60px 5% 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+            animation: footerGlow 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes footerGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .footer-col h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-col p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-col ul li a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: #a855f7;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            text-decoration: none;
+            transition: background 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .newsletter {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .newsletter input {
+            flex: 1;
+                      padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .newsletter input::placeholder {
+            color: #888;
+        }
+
+        .newsletter button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .newsletter button:hover {
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        /* Floating Telegram Button */
+        .telegram-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 55px;
+            height: 55px;
+            background: #0088cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 999;
+        }
+
+        .telegram-float:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 4px 25px rgba(0, 136, 204, 0.6);
+        }
+
+        /* Card Image Placeholders using CSS gradients */
+        .card-img-placeholder {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .card-img-placeholder.novels {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .card-img-placeholder.academics {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .card-img-placeholder.selfhelp {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(15, 15, 15, 0.98);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .social-icons {
+                justify-content: center;
+            }
+
+            .newsletter {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">
+            <img src="logo.png" alt="EBOOKS LIBRARY Logo">
+            <span>EBOOKS LIBRARY</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="logo.png" alt="EBOOKS LIBRARY" class="hero-logo">
+        <h1>EBOOKS LIBRARY</h1>
+        <p>Your one-stop destination for free ebooks. Explore thousands of books across novels, academics, self-help and more — all available for free download.</p>
+        <a href="#categories" class="hero-btn">Explore Books</a>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <h2 class="section-title">Book Categories</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-img-placeholder novels">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Novels & Fiction</h3>
+                    <p>Discover an extensive collection of bestselling novels, classic literature, and thrilling fiction stories.</p>
+                    <a href="#" class="card-btn">Browse Novels</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img-placeholder academics">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Academic Books</h3>
+                    <p>Access textbooks, study guides, previous year papers and notes for all classes and competitive exams.</p>
+                    <a href="#" class="card-btn">Get Books</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img-placeholder selfhelp">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Self-Help & Motivation</h3>
+                    <p>Explore life-changing self-help books, motivational guides, and personal development resources.</p>
+                    <a href="#" class="card-btn">Start Reading</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="tools" id="tools">
+        <h2 class="section-title">Useful Tools</h2>
+        <div class="tools-grid">
+            <div class="tool-card">
+                <i class="fas fa-clock"></i>
+                <h3>Pomodoro Timer</h3>
+                <p>Stay focused with timed study sessions and breaks.</p>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-search"></i>
+                <h3>Book Search</h3>
+                <p>Find any ebook instantly from our vast collection.</p>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Reading Tracker</h3>
+                <p>Track your reading progress and set goals.</p>
+            </div>
+            <div class="tool-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Daily Planner</h3>
+                <p>Plan your reading schedule and stay consistent.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How can I download ebooks from this site?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Simply browse through our categories, select the book you want, and click the download button. All books are available in PDF format and can be downloaded for free without any registration.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Are all the books really free?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! All ebooks available on EBOOKS LIBRARY are completely free. We believe education and knowledge should be accessible to everyone. We share only public domain and freely distributable content.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I request a specific book?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! You can contact us via Telegram or through the contact section. We'll try our best to add the requested book to our library as soon as possible.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What formats are the ebooks available in?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Most ebooks are available in PDF format which can be read on any device — mobile, tablet, or computer. Some books may also be available in EPUB format for e-readers.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>I'm facing issues with downloads. What should I do?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>If you're having trouble downloading, try using a different browser or clearing your cache. If the issue persists, contact us on Telegram and we'll help you out right away.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-grid">
+            <div class="footer-col">
+              <h3>About EBOOKS LIBRARY</h3>
+                <p>EBOOKS LIBRARY is a free platform dedicated to making books accessible to everyone. We curate and share quality ebooks across multiple genres and subjects.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#categories">Book Categories</a></li>
+                    <li><a href="#tools">Useful Tools</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Stay Connected</h3>
+                <div class="social-icons">
+                    <a href="#" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+                <h3 style="margin-top: 20px;">Newsletter</h3>
+                <div class="newsletter">
+                    <input type="email" placeholder="Enter your email" aria-label="Email for newsletter">
+                    <button>Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EBOOKS LIBRARY. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Telegram Button -->
+    <a href="#" class="telegram-float" aria-label="Contact on Telegram">
+        <i class="fab fa-telegram-plane"></i>
+    </a>
+
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isActive = item.classList.contains('active');
+
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+
+                // Open clicked item if it was not active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
