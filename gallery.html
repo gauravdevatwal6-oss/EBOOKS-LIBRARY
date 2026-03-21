@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Gallery - Gaurav Dev</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            margin-top: 15px;
+        }
+        
+        .nav-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+        
+        .media-wrapper {
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+        
+        .media-wrapper img, 
+        .media-wrapper video {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .info {
+            padding: 15px;
+        }
+        
+        .filename {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        
+        .date {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
+        
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+        }
+        
+        .upload-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            margin-top: 10px;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .actions button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Media Gallery</h1>
+        <p>All your uploaded images and videos</p>
+        <div class="nav-buttons">
+            <a href="/" class="nav-btn">🏠 Home</a>
+            <a href="/upload.html" class="nav-btn">📤 Upload New</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div id="galleryGrid" class="gallery-grid"></div>
+    </div>
+
+    <script>
+        function loadGallery() {
+            const gallery = JSON.parse(localStorage.getItem('mediaGallery') || '[]');
+            const galleryGrid = document.getElementById('galleryGrid');
+            
+            if (gallery.length === 0) {
+                galleryGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>📭 No Media Yet</h3>
+                        <p>Upload your first image or video to get started.</p>
+                        <a href="/upload.html" class="upload-link">+ Upload Media</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            galleryGrid.innerHTML = gallery.map((item, index) => {
+                const isVideo = item.url.match(/\.(mp4|mov|webm)$/i);
+                return `
+                    <div class="gallery-item">
+                        <div class="media-wrapper" onclick="window.open('${item.url}', '_blank')">
+                            ${isVideo ? 
+                                `<video src="${item.url}" preload="metadata"></video>` : 
+                                `<img src="${item.url}" alt="${item.filename}" loading="lazy">`
+                            }
+                        </div>
+                        <div class="info">
+                            <div class="filename">${item.filename || 'Media'}</div>
+                            <div class="date">${new Date(item.date).toLocaleString()}</div>
+                            <div class="actions">
+                                <button class="copy-btn" onclick="copyToClipboard('${item.url}', event)">📋 Copy URL</button>
+                                <button class="copy-btn delete-btn" onclick="deleteItem(${index}, event)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function copyToClipboard(text, event) {
+            event.stopPropagation();
+            navigator.clipboard.writeText(text);
+            alert('✅ URL copied to clipboard!');
+        }
+        
+        function deleteItem(index, event) {
+            event.stopPropagation();
+            if (confirm('Remove from gallery?')) {
+                let gallery = JSON.parse(localStorage.getItem('mediaGallery') || '[]');
+                gallery.splice(index, 1);
+                localStorage.setItem('mediaGallery', JSON.stringify(gallery));
+                loadGallery();
+            }
+        }
+        
+        loadGallery();
+    </script>
+</body>
+</html>
