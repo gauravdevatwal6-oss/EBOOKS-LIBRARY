@@ -8,123 +8,124 @@
 <style>
 body {
     margin: 0;
-    font-family: Arial;
-    background: linear-gradient(to bottom, #000000, #1a1a1a);
+    font-family: 'Poppins', sans-serif;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center/cover;
     color: white;
+}
+
+/* Dark Overlay */
+.overlay {
+    background: rgba(0,0,0,0.75);
+    min-height: 100vh;
+    padding: 20px;
 }
 
 /* Title */
 h2 {
     text-align: center;
-    margin: 20px;
+    margin-top: 10px;
 }
 
-/* Grid Layout */
+/* Search */
+.search-box {
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+/* Grid */
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    padding: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
 }
 
 /* Card */
 .card {
-    height: 140px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
     border-radius: 15px;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: end;
-    justify-content: center;
     padding: 10px;
-    position: relative;
-    overflow: hidden;
+    text-align: center;
+    transition: 0.3s;
 }
 
-/* Dark overlay */
-.card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
+.card:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 15px rgba(168,85,247,0.6);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
 }
 
 .card h4 {
-    position: relative;
-    z-index: 1;
     font-size: 13px;
+    margin-top: 10px;
 }
 
-/* Different images */
-.vmc {
-    background-image: url("images/vmc.jpg");
-}
-
-.unacademy {
-    background-image: url("images/unacademy.jpg");
-}
-
-.esaral {
-    background-image: url("images/esaral.jpg");
-}
-
-/* Scroll to top button */
-.top-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: black;
+/* Button */
+.btn {
+    display: block;
+    margin-top: 8px;
+    padding: 6px;
+    background: linear-gradient(135deg,#a855f7,#3b82f6);
+    border-radius: 8px;
+    text-decoration: none;
     color: white;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
-}
-
-/* Mobile */
-@media(max-width: 768px){
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    font-size: 12px;
 }
 </style>
+
 </head>
 
 <body>
 
+<div class="overlay">
+
 <h2>📚 Question Bank</h2>
 
+<!-- Search -->
+<div class="search-box">
+    <input type="text" placeholder="Search Books...">
+</div>
+
+<!-- Cards -->
 <div class="grid">
 
-<div class="card vmc">
-    <h4>VMC Modules</h4>
+<div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h4>Vidyamandir Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
 </div>
 
-<div class="card unacademy">
+<div class="card">
+    <img src="https://via.placeholder.com/150">
     <h4>Unacademy Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
 </div>
 
-<div class="card esaral">
+<div class="card">
+    <img src="https://via.placeholder.com/150">
     <h4>Esaral Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
 </div>
 
-<!-- aur add karna ho toh copy paste karo -->
-
 </div>
 
-<!-- Scroll Button -->
-<div class="top-btn" onclick="topFunction()">⬆</div>
-
-<script>
-function topFunction() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-</script>
+</div>
 
 </body>
 </html>
