@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question Bank</title>
 
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center/cover;
+    color: white;
+}
+
+/* Dark Overlay */
+.overlay {
+    background: rgba(0,0,0,0.75);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Title */
+h2 {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Search */
+.search-box {
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 15px rgba(168,85,247,0.6);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card h4 {
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+/* Button */
+.btn {
+    display: block;
+    margin-top: 8px;
+    padding: 6px;
+    background: linear-gradient(135deg,#a855f7,#3b82f6);
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+<h2>📚 Question Bank</h2>
+
+<!-- Search -->
+<div class="search-box">
+    <input type="text" placeholder="Search Books...">
+</div>
+
+<!-- Cards -->
+<div class="grid">
+
+<div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h4>Vidyamandir Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
+</div>
+
+<div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h4>Unacademy Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
+</div>
+
+<div class="card">
+    <img src="https://via.placeholder.com/150">
+    <h4>Esaral Modules</h4>
+    <a href="https://t.me/class11thlibrary" class="btn" target="_blank">Open</a>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
