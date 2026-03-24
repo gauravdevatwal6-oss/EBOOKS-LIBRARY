@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question Bank</title>
 
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: url('bg.jpg') no-repeat center center/cover;
+    color: white;
+}
+
+/* Overlay */
+.overlay {
+    background: rgba(0,0,0,0.7);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Search Bar */
+.search-box {
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* Cards */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.card {
+    background: rgba(0,0,0,0.6);
+    padding: 10px;
+    border-radius: 15px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.card h4 {
+    font-size: 14px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+<h2 style="text-align:center;">📚 Question Bank</h2>
+
+<!-- Search -->
+<div class="search-box">
+    <input type="text" placeholder="Search Books...">
+</div>
+
+<!-- Cards -->
+<div class="grid">
+
+<div class="card">
+    <img src="book1.jpg">
+    <h4>Physics Module</h4>
+</div>
+
+<div class="card">
+    <img src="book2.jpg">
+    <h4>Chemistry Module</h4>
+</div>
+
+<div class="card">
+    <img src="book3.jpg">
+    <h4>Maths Module</h4>
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
