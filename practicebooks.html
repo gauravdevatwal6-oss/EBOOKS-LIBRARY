@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Banks - EBOOKS LIBRARY</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding-top: 80px;
+            overflow-x: hidden;
+        }
+
+        /* Snowfall Canvas */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000; padding: 12px 5%;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo img { width: 40px; height: 40px; border-radius: 50%; }
+        .nav-logo span {
+            font-size: 1.2rem; font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .header { text-align: center; padding: 40px 20px; }
+        .header h1 {
+            font-size: 2.2rem; margin-bottom: 10px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .search-container { max-width: 600px; margin: 0 auto 30px; padding: 0 20px; }
+        .search-box {
+            width: 100%; padding: 12px 20px;
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: white; outline: none;
+        }
+
+        /* QB Grid & Cards */
+        .qb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 5% 60px;
+        }
+
+        .qb-card {
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px; padding: 15px;
+            position: relative; overflow: hidden;
+            transition: 0.3s;
+        }
+        .qb-card:hover { transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.4); }
+
+        .qb-image-wrapper {
+            background: #1a1a1a;
+            border-radius: 15px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .qb-image-wrapper img {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .qb-card h3 { 
+            margin-bottom: 20px; 
+            font-size: 1.15rem; 
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .download-btn {
+            display: block; width: 100%; padding: 12px;
+            background: #3b82f6;
+            color: white; text-decoration: none; border-radius: 10px;
+            font-weight: 600; text-align: center; margin-bottom: 10px;
+            transition: 0.3s;
+        }
+        .method-btn {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+        }
+        .download-btn:hover { opacity: 0.9; transform: scale(1.02); }
+
+        .badge {
+            position: absolute; top: 10px; right: -30px;
+            background: #a855f7; color: white;
+            padding: 5px 35px; font-size: 0.7rem;
+            transform: rotate(45deg); font-weight: bold; z-index: 10;
+        }
+
+        /* Float Buttons */
+        .float-buttons {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 9999;
+        }
+
+        .scroll-top {
+            width: 50px;
+            height: 50px;
+            background: #7c3aed;
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .telegram-float {
+            width: 60px;
+            height: 60px;
+            background: #0088cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.8rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            transition: 0.3s;
+        }
+
+        .scroll-top:hover, .telegram-float:hover { transform: translateY(-5px); }
+
+        @media (max-width: 768px) {
+            .qb-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="snowCanvas"></canvas>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="logo.png" alt="Logo">
+            <span>EBOOKS LIBRARY</span>
+        </a>
+        <a href="index.html" style="color: #ccc; text-decoration: none; font-weight: 500;">← Back</a>
+    </nav>
+
+    <header class="header">
+        <h1>Question Banks / Modules</h1>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search modules..." onkeyup="filterBooks()">
+    </div>
+
+    <main class="qb-grid" id="qbContainer">
+        
+        <div class="qb-card">
+            <div class="badge">NEW</div>
+            <div class="qb-image-wrapper">
+                <img src="new-img.jpg" alt="Comming Soon">
+            </div>
+            <h3>Call me next book</h3>
+            <a href="#" class="download-btn">Get 📥</a>
+            <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
+        </div>
+
+        <div class="qb-card">
+            <div class="qb-image-wrapper">
+                <img src="chemistry-img.jpg" alt="Chemistry Module">
+            </div>
+            <h3>Lakshya NEET Chemistry Vol 2</h3>
+            <a href="#" class="download-btn">Get 📥</a>
+            <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
+        </div>
+
+        <div class="qb-card">
+            <div class="qb-image-wrapper">
+                <img src="chemistry-img.jpg" alt="Chemistry Module">
+            </div>
+            <h3>Lakshya NEET Chemistry Vol 2</h3>
+            <a href="#" class="download-btn">Get 📥</a>
+            <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
+        </div>
+
+        <div class="qb-card">
+            <div class="qb-image-wrapper">
+                <img src="chemistry-img.jpg" alt="Chemistry Module">
+            </div>
+            <h3>Lakshya NEET Chemistry Vol 2</h3>
+            <a href="#" class="download-btn">Get 📥</a>
+            <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
+        </div>
+
+    </main>
+
+    <div class="float-buttons">
+        <div class="scroll-top" id="scrollTopBtn">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <a href="https://t.me/GDEbooksLibrary" class="telegram-float" target="_blank">
+            <i class="fab fa-telegram-plane"></i>
+        </a>
+    </div>
+
+    <script>
+        // --- Snowfall Animation ---
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, snowflakes = [];
+
+        function initSnow() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            snowflakes = [];
+            for (let i = 0; i < 150; i++) {
+                snowflakes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 3 + 1,
+                    d: Math.random() * 1
+                });
+            }
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            updateSnow();
+        }
+
+        function updateSnow() {
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                p.y += Math.cos(p.d) + 1 + p.r / 2;
+                p.x += Math.sin(p.d) * 2;
+                if (p.x > width + 5 || p.x < -5 || p.y > height) {
+                    snowflakes[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
+                }
+            }
+        }
+
+        window.addEventListener('resize', initSnow);
+        initSnow();
+        setInterval(drawSnow, 33);
+
+        // --- Search Filter ---
+        function filterBooks() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('qb-card');
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                cards[i].style.display = title.includes(input) ? "" : "none";
+            }
+        }
+
+        // --- Scroll to Top ---
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollTopBtn.style.display = "flex";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
