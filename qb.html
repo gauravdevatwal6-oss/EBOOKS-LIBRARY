@@ -14,8 +14,21 @@
             background: #0a0a0a;
             color: #fff;
             padding-top: 80px;
+            overflow-x: hidden;
         }
 
+        /* Snowfall Canvas */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
         .navbar {
             position: fixed; top: 0; left: 0; width: 100%;
             background: rgba(15, 15, 15, 0.95);
@@ -47,6 +60,7 @@
             color: white; outline: none;
         }
 
+        /* QB Grid & Cards */
         .qb-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -58,29 +72,33 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 20px; padding: 15px;
             position: relative; overflow: hidden;
+            transition: 0.3s;
         }
+        .qb-card:hover { transform: translateY(-5px); border-color: rgba(168, 85, 247, 0.4); }
 
         .qb-image-wrapper {
             background: #1a1a1a;
             border-radius: 15px;
-            height: 220px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .qb-image-wrapper img {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 85%;
+            max-height: 85%;
             object-fit: contain;
+            border-radius: 8px;
         }
 
         .qb-card h3 { 
-            margin-bottom: 15px; 
-            font-size: 1.1rem; 
+            margin-bottom: 20px; 
+            font-size: 1.15rem; 
             font-weight: 600;
-            padding-left: 5px;
+            color: #fff;
         }
         
         .download-btn {
@@ -88,8 +106,12 @@
             background: #3b82f6;
             color: white; text-decoration: none; border-radius: 10px;
             font-weight: 600; text-align: center; margin-bottom: 10px;
+            transition: 0.3s;
         }
-        .method-btn { background: #5c67f2; }
+        .method-btn {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+        }
+        .download-btn:hover { opacity: 0.9; transform: scale(1.02); }
 
         .badge {
             position: absolute; top: 10px; right: -30px;
@@ -98,7 +120,7 @@
             transform: rotate(45deg); font-weight: bold; z-index: 10;
         }
 
-        /* Float Buttons Container */
+        /* Float Buttons */
         .float-buttons {
             position: fixed;
             bottom: 25px;
@@ -114,12 +136,11 @@
             height: 50px;
             background: #7c3aed;
             border-radius: 12px;
-            display: none; /* JavaScript handle karega */
+            display: none;
             align-items: center;
             justify-content: center;
             color: #fff;
             font-size: 1.2rem;
-            text-decoration: none;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
             cursor: pointer;
             transition: 0.3s;
@@ -149,12 +170,14 @@
 </head>
 <body>
 
+    <canvas id="snowCanvas"></canvas>
+
     <nav class="navbar">
         <a href="index.html" class="nav-logo">
             <img src="logo.png" alt="Logo">
             <span>EBOOKS LIBRARY</span>
         </a>
-        <a href="index.html" style="color: #ccc; text-decoration: none;">← Back</a>
+        <a href="index.html" style="color: #ccc; text-decoration: none; font-weight: 500;">← Back</a>
     </nav>
 
     <header class="header">
@@ -162,14 +185,15 @@
     </header>
 
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="Search books..." onkeyup="filterBooks()">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search modules..." onkeyup="filterBooks()">
     </div>
 
     <main class="qb-grid" id="qbContainer">
+        
         <div class="qb-card">
             <div class="badge">NEW</div>
             <div class="qb-image-wrapper">
-                <img src="physics-img.jpg" alt="Physics">
+                <img src="physics-img.jpg" alt="Physics Module">
             </div>
             <h3>Arjuna JEE Modules Latest Part 1</h3>
             <a href="#" class="download-btn">Get 📥</a>
@@ -178,12 +202,13 @@
 
         <div class="qb-card">
             <div class="qb-image-wrapper">
-                <img src="chemistry-img.jpg" alt="Chemistry">
+                <img src="chemistry-img.jpg" alt="Chemistry Module">
             </div>
             <h3>Lakshya NEET Chemistry Vol 2</h3>
             <a href="#" class="download-btn">Get 📥</a>
             <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
         </div>
+
     </main>
 
     <div class="float-buttons">
@@ -196,7 +221,56 @@
     </div>
 
     <script>
-        // Search Filter
+        // --- Snowfall Animation ---
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, snowflakes = [];
+
+        function initSnow() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            snowflakes = [];
+            for (let i = 0; i < 150; i++) {
+                snowflakes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 3 + 1,
+                    d: Math.random() * 1
+                });
+            }
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            updateSnow();
+        }
+
+        function updateSnow() {
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                p.y += Math.cos(p.d) + 1 + p.r / 2;
+                p.x += Math.sin(p.d) * 2;
+                if (p.x > width + 5 || p.x < -5 || p.y > height) {
+                    snowflakes[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
+                }
+            }
+        }
+
+        window.addEventListener('resize', initSnow);
+        initSnow();
+        setInterval(drawSnow, 33);
+
+        // --- Search Filter ---
         function filterBooks() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('qb-card');
@@ -206,16 +280,15 @@
             }
         }
 
-        // Back to Top Logic
+        // --- Scroll to Top ---
         const scrollTopBtn = document.getElementById('scrollTopBtn');
         window.onscroll = function() {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
                 scrollTopBtn.style.display = "flex";
             } else {
                 scrollTopBtn.style.display = "none";
             }
         };
-
         scrollTopBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
