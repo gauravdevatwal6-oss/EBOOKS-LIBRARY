@@ -32,18 +32,14 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .header {
-            text-align: center; padding: 40px 20px;
-        }
+        .header { text-align: center; padding: 40px 20px; }
         .header h1 {
             font-size: 2.2rem; margin-bottom: 10px;
             background: linear-gradient(135deg, #a855f7, #3b82f6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .search-container {
-            max-width: 600px; margin: 0 auto 30px; padding: 0 20px;
-        }
+        .search-container { max-width: 600px; margin: 0 auto 30px; padding: 0 20px; }
         .search-box {
             width: 100%; padding: 12px 20px;
             border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
@@ -93,9 +89,7 @@
             color: white; text-decoration: none; border-radius: 10px;
             font-weight: 600; text-align: center; margin-bottom: 10px;
         }
-        .method-btn {
-            background: #5c67f2;
-        }
+        .method-btn { background: #5c67f2; }
 
         .badge {
             position: absolute; top: 10px; right: -30px;
@@ -104,10 +98,34 @@
             transform: rotate(45deg); font-weight: bold; z-index: 10;
         }
 
-        .telegram-float {
+        /* Float Buttons Container */
+        .float-buttons {
             position: fixed;
             bottom: 25px;
             right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 9999;
+        }
+
+        .scroll-top {
+            width: 50px;
+            height: 50px;
+            background: #7c3aed;
+            border-radius: 12px;
+            display: none; /* JavaScript handle karega */
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .telegram-float {
             width: 60px;
             height: 60px;
             background: #0088cc;
@@ -119,10 +137,10 @@
             font-size: 1.8rem;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
-            z-index: 9999;
-            transition: transform 0.3s;
+            transition: 0.3s;
         }
-        .telegram-float:hover { transform: scale(1.1); }
+
+        .scroll-top:hover, .telegram-float:hover { transform: translateY(-5px); }
 
         @media (max-width: 768px) {
             .qb-grid { grid-template-columns: 1fr; }
@@ -148,7 +166,6 @@
     </div>
 
     <main class="qb-grid" id="qbContainer">
-        
         <div class="qb-card">
             <div class="badge">NEW</div>
             <div class="qb-image-wrapper">
@@ -167,14 +184,19 @@
             <a href="#" class="download-btn">Get 📥</a>
             <a href="#" class="download-btn method-btn">Download Method ⬇️</a>
         </div>
-
     </main>
 
-    <a href="https://t.me/GDEbooksLibrary" class="telegram-float" target="_blank">
-        <i class="fab fa-telegram-plane"></i>
-    </a>
+    <div class="float-buttons">
+        <div class="scroll-top" id="scrollTopBtn">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <a href="https://t.me/GDEbooksLibrary" class="telegram-float" target="_blank">
+            <i class="fab fa-telegram-plane"></i>
+        </a>
+    </div>
 
     <script>
+        // Search Filter
         function filterBooks() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('qb-card');
@@ -183,6 +205,20 @@
                 cards[i].style.display = title.includes(input) ? "" : "none";
             }
         }
+
+        // Back to Top Logic
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollTopBtn.style.display = "flex";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
 </body>
 </html>
