@@ -104,6 +104,26 @@
             transform: rotate(45deg); font-weight: bold; z-index: 10;
         }
 
+        .telegram-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: #0088cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.8rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            z-index: 9999;
+            transition: transform 0.3s;
+        }
+        .telegram-float:hover { transform: scale(1.1); }
+
         @media (max-width: 768px) {
             .qb-grid { grid-template-columns: 1fr; }
         }
@@ -149,6 +169,10 @@
         </div>
 
     </main>
+
+    <a href="https://t.me/GDEbooksLibrary" class="telegram-float" target="_blank">
+        <i class="fab fa-telegram-plane"></i>
+    </a>
 
     <script>
         function filterBooks() {
