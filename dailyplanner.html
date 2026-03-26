@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Student Planner - EBOOKS LIBRARY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #a855f7;
+            --bg: #0a0a0a;
+            --card: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); padding: 15px; min-height: 100vh; overflow-x: hidden; }
+
+        #snowCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        .container { max-width: 500px; margin: 0 auto; padding-top: 20px; position: relative; z-index: 1; }
+        .header-title { text-align: center; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem; color: var(--primary); }
+
+        .date-bar {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 15px; border-radius: 12px; margin-bottom: 15px;
+        }
+        .nav-btn { background: var(--primary); color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+
+        .input-section { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #333; background: rgba(0,0,0,0.3); color: #fff; outline: none; }
+        .add-task-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+        .task-list-box { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .task-card { 
+            display: flex; align-items: flex-start; gap: 12px; background: rgba(255,255,255,0.03); 
+            padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--primary);
+        }
+        
+        .custom-check {
+            min-width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 6px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 3px;
+        }
+        .task-card.done .custom-check { background: var(--primary); }
+        .task-card.done .custom-check::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
+        .task-card.done h4, .task-card.done p { text-decoration: line-through; opacity: 0.5; }
+        .timestamp { font-size: 0.7rem; color: #888; margin-top: 4px; display: block; }
+
+        .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .info-box { background: var(--card); padding: 12px; border-radius: 15px; text-align: center; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); }
+        .info-box i { color: var(--primary); font-size: 1rem; margin-bottom: 5px; display: block; }
+
+        /* Working Calendar Styles */
+        .calendar-section { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
+        .cal-day { padding: 10px 5px; font-size: 0.8rem; border-radius: 8px; cursor: pointer; transition: 0.3s; color: #ccc; }
+        .cal-day:hover { background: rgba(168, 85, 247, 0.2); color: white; }
+        .cal-day.selected { background: var(--primary) !important; color: white !important; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
+        .cal-header { font-weight: 700; color: #888; font-size: 0.7rem; padding-bottom: 5px; }
+        
+        .back-home { position: fixed; top: 15px; left: 15px; font-size: 1.2rem; color: #fff; text-decoration: none; background: var(--card); padding: 8px 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <canvas id="snowCanvas"></canvas>
+    <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i></a>
+
+    <div class="container">
+        <div class="header-title">📅 Premium Daily Planner</div>
+
+        <div class="date-bar">
+            <button class="nav-btn" onclick="moveDate(-1)">Prev</button>
+            <div id="dateDisplay" style="font-weight: 700;"></div>
+            <button class="nav-btn" onclick="moveDate(1)">Next</button>
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="taskTitle" placeholder="Task Title...">
+            <textarea id="taskDesc" placeholder="Description..." rows="2"></textarea>
+            <button class="add-task-btn" onclick="addNewTask()">+ Add Task</button>
+        </div>
+
+        <div class="task-list-box" id="tasksList"></div>
+
+        <div class="info-grid">
+            <div class="info-box"><i class="fas fa-lightbulb"></i><b>Study Tip</b><p>Take breaks.</p></div>
+            <div class="info-box"><i class="fas fa-quote-left"></i><b>Quote</b><p>Start now.</p></div>
+            <div class="info-box"><i class="fas fa-music"></i><b>Music</b><p>Lofi Beats</p></div>
+        </div>
+
+        <div class="calendar-section">
+            <b id="monthLabel" style="color:var(--primary); font-size: 1.1rem;"></b>
+            <div class="cal-grid" id="calGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = new Date();
+
+        // Snowfall (Same as index.html)
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class Particle {
+            constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.size = Math.random()*2+1; this.speed = Math.random()*1+0.5; }
+            update() { this.y += this.speed; if (this.y > canvas.height) this.y = -10; }
+            draw() { ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+        }
+        for (let i=0; i<50; i++) particles.push(new Particle());
+        function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animate); }
+        animate();
+
+        // Core Functions
+        function updateUI() {
+            const options = { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('dateDisplay').innerText = selectedDate.toLocaleDateString('en-US', options);
+            loadTasks();
+            renderCalendar();
+        }
+
+        function moveDate(n) {
+            selectedDate.setDate(selectedDate.getDate() + n);
+            updateUI();
+        }
+
+        function selectSpecificDate(day) {
+            selectedDate.setDate(day);
+            updateUI();
+        }
+
+        function addNewTask() {
+            const title = document.getElementById('taskTitle').value;
+            const desc = document.getElementById('taskDesc').value;
+            if(!title) return;
+            const now = new Date();
+            const timeStamp = `${now.toLocaleDateString([], {day:'2-digit', month:'short'})}, ${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+            const dateKey = selectedDate.toDateString();
+            let db = JSON.parse(localStorage.getItem('planner_data')) || {};
+            if(!db[dateKey]) db[dateKey] = [];
+            db[dateKey].push({ title, desc, done: false, time: timeStamp });
+            localStorage.setItem('planner_data', JSON.stringify(db));
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDesc').value = '';
+            loadTasks();
+        }
+
+        function loadTasks() {
+            const dateKey = selectedDate.toDateString();
+            const db = JSON.parse(localStorage.getItem('planner_data')) || {};
+            const listArea = document.getElementById('tasksList');
+            listArea.innerHTML = '';
+            const tasks = db[dateKey] || [];
+            if(tasks.length === 0) {
+                listArea.innerHTML = '<p style="text-align:center; color:#666; font-size:0.9rem; padding:10px;">No tasks for this day!</p>';
+                return;
+            }
+            tasks.forEach((task, index) => {
+                const div = document.createElement('div');
+                div.className = `task-card ${task.done ? 'done' : ''}`;
+                div.innerHTML = `
+                    <div class="custom-check" onclick="toggleTask(${index})"></div>
+                    <div class="task-content">
+                        <h4>${task.title}</h4>
+                        <p style="font-size:0.8rem; color:#888;">${task.desc}</p>
+                        <span class="timestamp"><i class="far fa-clock"></i> ${task.time}</span>
+                    </div>
+                    <i class="fas fa-trash-alt" style="color:#ef4444; cursor:pointer;" onclick="deleteTask(${index})"></i>
+                `;
+                listArea.appendChild(div);
+            });
+        }
+
+        function toggleTask(idx) {
+            const dateKey = selectedDate.toDateString();
+            let db = JSON.parse(localStorage.getItem('planner_data'));
+            db[dateKey][idx].done = !db[dateKey][idx].done;
+            localStorage.setItem('planner_data', JSON.stringify(db));
+            loadTasks();
+        }
+
+        function deleteTask(idx) {
+            const dateKey = selectedDate.toDateString();
+            let db = JSON.parse(localStorage.getItem('planner_data'));
+            db[dateKey].splice(idx, 1);
+            localStorage.setItem('planner_data', JSON.stringify(db));
+            loadTasks();
+        }
+
+        // Fixed Calendar Logic
+        function renderCalendar() {
+            const grid = document.getElementById('calGrid');
+            grid.innerHTML = '';
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('monthLabel').innerText = `${months[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+            
+            const daysHead = ['S','M','T','W','T','F','S'];
+            daysHead.forEach(d => grid.innerHTML += `<div class="cal-header">${d}</div>`);
+            
+            const firstDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1).getDay();
+            const totalDays = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0).getDate();
+
+            for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
+            
+            for(let i=1; i<=totalDays; i++) {
+                const isSelected = (i === selectedDate.getDate()) ? 'selected' : '';
+                grid.innerHTML += `<div class="cal-day ${isSelected}" onclick="selectSpecificDate(${i})">${i}</div>`;
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
+
