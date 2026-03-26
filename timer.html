@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer & History - EBOOKS LIBRARY</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #0a0a0a; color: #fff; text-align: center; padding-top: 50px; overflow-x: hidden; }
+        
+        #snowCanvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+        /* Countdown Section */
+        .exam-box {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid #3b82f6;
+            padding: 20px; border-radius: 20px; margin-bottom: 25px;
+        }
+        .stream-btns { margin: 15px 0; display: flex; justify-content: center; gap: 10px; }
+        .s-btn { 
+            padding: 8px 18px; border: 1px solid #3b82f6; background: transparent; 
+            color: #fff; cursor: pointer; border-radius: 8px; transition: 0.3s;
+        }
+        .s-btn.active { background: #3b82f6; font-weight: bold; }
+        #countdownText { font-size: 1.4rem; font-weight: 700; color: #3b82f6; font-family: monospace; }
+
+        /* Timer Card */
+        .timer-card {
+            background: #111; border: 1px solid #a855f7;
+            padding: 30px; border-radius: 20px; margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+        #timerDisplay { font-size: 5rem; font-weight: 700; margin: 10px 0; font-family: monospace; }
+
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; color: white; transition: 0.3s; }
+        .start { background: #22c55e; }
+        .pause { background: #eab308; }
+        .reset { background: #ef4444; }
+
+        /* History Card */
+        .history-card {
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px; border-radius: 20px; text-align: left;
+        }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .history-list { list-style: none; max-height: 250px; overflow-y: auto; }
+        .history-item { 
+            background: rgba(255,255,255,0.05); padding: 12px; 
+            border-radius: 12px; margin-bottom: 8px; font-size: 0.85rem;
+            display: flex; justify-content: space-between; border-left: 4px solid #a855f7;
+        }
+        .clear-btn { background: transparent; color: #ef4444; border: 1px solid #ef4444; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+
+        .back-btn { position: fixed; top: 20px; left: 20px; color: #fff; text-decoration: none; background: #222; padding: 8px 15px; border-radius: 8px; z-index: 100; }
+    </style>
+</head>
+<body>
+
+    <canvas id="snowCanvas"></canvas>
+    <a href="index.html" class="back-btn">← Back</a>
+
+    <div class="container">
+        <div class="exam-box">
+            <h3 id="examTitle">Target: JEE 2027</h3>
+            <div class="stream-btns">
+                <button class="s-btn active" id="jeeBtn">JEE (PCM)</button>
+                <button class="s-btn" id="neetBtn">NEET (PCB)</button>
+            </div>
+            <div id="countdownText">000d 00h 00m 00s</div>
+        </div>
+
+        <div class="timer-card">
+            <h2>🍅 Pomodoro Timer</h2>
+            <div id="timerDisplay">25:00</div>
+            <div class="btn-group">
+                <button class="btn start" id="startBtn">▶️ Start</button>
+                <button class="btn pause" id="pauseBtn">⏸️ Stop</button>
+                <button class="btn reset" id="resetBtn">🔄 Reset</button>
+            </div>
+            <p style="margin-top:15px; color:#888;">Sessions Completed: <span id="cycleCount" style="color:#a855f7; font-weight:bold;">0</span></p>
+        </div>
+
+        <div class="history-card">
+            <div class="history-header">
+                <h3>📜 Recent Sessions</h3>
+                <button class="clear-btn" id="clearBtn">Clear All</button>
+            </div>
+            <ul class="history-list" id="historyList"></ul>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // --- DOM Elements ---
+            const display = document.getElementById('timerDisplay');
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const cycleText = document.getElementById('cycleCount');
+            const historyList = document.getElementById('historyList');
+            const clearBtn = document.getElementById('clearBtn');
+            const countdownText = document.getElementById('countdownText');
+
+            // --- Timer Variables ---
+            let timer = null;
+            let timeLeft = 25 * 60;
+            let isRunning = false;
+            let cycles = localStorage.getItem('pomoCycles') || 0;
+            cycleText.innerText = cycles;
+
+            // --- Helper: Update Timer Display ---
+            function updateTimerUI() {
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+
+            // --- Helper: Correct Time History ---
+            function saveHistory(status) {
+                let now = new Date();
+                // Local time with AM/PM
+                let timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                
+                let history = JSON.parse(localStorage.getItem('pomoHistory')) || [];
+                history.unshift({ time: timeStr, status: status, left: display.innerText });
+                
+                localStorage.setItem('pomoHistory', JSON.stringify(history.slice(0, 10)));
+                renderHistory();
+            }
+
+            function renderHistory() {
+                let history = JSON.parse(localStorage.getItem('pomoHistory')) || [];
+                if(history.length === 0) {
+                    historyList.innerHTML = '<li style="color:#666; text-align:center; padding:10px;">No history yet.</li>';
+                    return;
+                }
+                historyList.innerHTML = history.map(h => `
+                    <li class="history-item">
+                        <span>🕒 ${h.time} - <b>${h.status}</b></span>
+                        <span style="color:#a855f7;">${h.left} left</span>
+                    </li>`).join('');
+            }
+
+            // --- Button Actions ---
+            startBtn.onclick = function() {
+                if (isRunning) return;
+                isRunning = true;
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerUI();
+                    } else {
+                        clearInterval(timer);
+                        isRunning = false;
+                        cycles++;
+                        localStorage.setItem('pomoCycles', cycles);
+                        cycleText.innerText = cycles;
+                        saveHistory("Finished ✅");
+                        alert("Great job! Session completed.");
+                        timeLeft = 25 * 60;
+                        updateTimerUI();
+                    }
+                }, 1000);
+            };
+
+            pauseBtn.onclick = function() {
+                if (!isRunning) return;
+                clearInterval(timer);
+                isRunning = false;
+                saveHistory("Stopped ⏸️");
+            };
+
+            resetBtn.onclick = function() {
+                clearInterval(timer);
+                isRunning = false;
+                timeLeft = 25 * 60;
+                updateTimerUI();
+            };
+
+            clearBtn.onclick = function() {
+                if(confirm("Clear all history and cycles?")) {
+                    localStorage.removeItem('pomoHistory');
+                    localStorage.setItem('pomoCycles', 0);
+                    cycleText.innerText = 0;
+                    renderHistory();
+                }
+            };
+
+            // --- Countdown Logic ---
+            let examDate = new Date("January 7, 2027 09:00:00").getTime();
+            
+            document.getElementById('jeeBtn').onclick = function() {
+                examDate = new Date("January 7, 2027 09:00:00").getTime();
+                switchActive(this, "Target: JEE 2027");
+            };
+            document.getElementById('neetBtn').onclick = function() {
+                examDate = new Date("May 2, 2027 10:00:00").getTime();
+                switchActive(this, "Target: NEET 2027");
+            };
+
+            function switchActive(btn, title) {
+                document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('examTitle').innerText = title;
+            }
+
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = examDate - now;
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                countdownText.innerText = `${d}d ${h}h ${m}m ${s}s`;
+            }, 1000);
+
+            // --- Snowfall ---
+            const canvas = document.getElementById('snowCanvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            function resize() { w = window.innerWidth; h = window.innerHeight; canvas.width = w; canvas.height = h; }
+            window.onresize = resize; resize();
+            function snow() {
+                ctx.clearRect(0,0,w,h);
+                ctx.fillStyle = "rgba(255,255,255,0.4)";
+                ctx.beginPath();
+                ctx.arc(Math.random()*w, Math.random()*h, 2, 0, Math.PI*2);
+                ctx.fill();
+            }
+            setInterval(snow, 150);
+
+            // Initial History Render
+            renderHistory();
+        };
+    </script>
+</body>
+</html>
