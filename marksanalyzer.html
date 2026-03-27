@@ -1,1 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marks Analyzer - EBOOKS LIBRARY</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* --- Daily Planner Style Background Glows --- */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- Back Button --- */
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            background: rgba(168, 85, 247, 0.15);
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: translateX(-3px);
+        }
+
+        /* --- Analyzer Box --- */
+        .analyzer-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            margin-top: 60px;
+        }
+
+        h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: 700; 
+            background: linear-gradient(135deg, #a855f7, #3b82f6); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        .input-field { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #aaa; }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select:focus, input:focus {
+            border-color: rgba(168, 85, 247, 0.6);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-analyze {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-analyze:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+
+        .result-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .res-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .res-value { font-weight: 600; }
+        .total-row { border: none; margin-top: 10px; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="analyzer-box">
+        <h2><i class="fas fa-calculator"></i> Marks Analyzer</h2>
+
+        <div class="input-field">
+            <label>Select Exam</label>
+            <select id="examType" onchange="updateUI()">
+                <option value="jee">JEE Main (Max Qs: 75)</option>
+                <option value="neet">NEET UG (Max Qs: 180)</option>
+                <option value="custom">Customize Rules</option>
+            </select>
+        </div>
+
+        <div id="customSettings" style="display: none; gap: 10px; margin-bottom: 15px;">
+            <div style="flex:1">
+                <label>Max Marks</label>
+                <input type="number" id="maxMarksInput" value="300">
+            </div>
+            <div style="flex:1">
+                <label>Max Qs</label>
+                <input type="number" id="maxQsInput" value="75">
+            </div>
+        </div>
+
+        <div class="input-field">
+            <label>Correct Answers</label>
+            <input type="number" id="correctAns" placeholder="0">
+        </div>
+
+        <div class="input-field">
+            <label>Wrong Answers</label>
+            <input type="number" id="wrongAns" placeholder="0">
+        </div>
+
+        <button class="btn-analyze" onclick="calculate()">Analyze Result</button>
+
+        <div id="resultArea" class="result-container">
+            <div class="res-row">
+                <span>Positive Score:</span>
+                <span id="posScore" style="color: #00ff88;">0</span>
+            </div>
+            <div class="res-row">
+                <span>Negative Marks:</span>
+                <span id="negScore" style="color: #ff4b2b;">0</span>
+            </div>
+            <div class="res-row">
+                <span>Percentage:</span>
+                <span id="percent" style="color: #ffca28;">0%</span>
+            </div>
+            <div class="res-row total-row">
+                <span>Final Score:</span>
+                <span id="finalScore" style="color: #3b82f6;">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateUI() {
+            const type = document.getElementById('examType').value;
+            document.getElementById('customSettings').style.display = (type === 'custom') ? 'flex' : 'none';
+            document.getElementById('resultArea').style.display = 'none';
+        }
+
+        function calculate() {
+            const type = document.getElementById('examType').value;
+            const correct = parseInt(document.getElementById('correctAns').value) || 0;
+            const wrong = parseInt(document.getElementById('wrongAns').value) || 0;
+
+            let maxMarks = 300;
+            let maxQs = 75;
+            let plus = 4;
+            let minus = 1;
+
+            if (type === 'neet') {
+                maxMarks = 720;
+                maxQs = 180;
+            } else if (type === 'custom') {
+                maxMarks = parseFloat(document.getElementById('maxMarksInput').value) || 300;
+                maxQs = parseFloat(document.getElementById('maxQsInput').value) || 75;
+            }
+
+            if ((correct + wrong) > maxQs) {
+                alert("Error: Total answers (" + (correct + wrong) + ") cannot exceed total questions (" + maxQs + ")!");
+                return;
+            }
+
+            const positive = correct * plus;
+            const negative = wrong * minus;
+            const total = positive - negative;
+            
+            let percentage = ((total / maxMarks) * 100).toFixed(2);
+            if (percentage < 0) percentage = "0.00";
+
+            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('posScore').innerText = '+' + positive;
+            document.getElementById('negScore').innerText = '-' + negative;
+            document.getElementById('finalScore').innerText = total + " / " + maxMarks;
+            document.getElementById('percent').innerText = percentage + "%";
+        }
+    </script>
+
+</body>
+</html>
